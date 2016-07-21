@@ -1,0 +1,13 @@
+{
+    "name": "jaggy/laziness",
+    "description": "Laziness Scripts",
+    "authors": [
+        {
+            "name": "Jaggy Gauran",
+            "email": "i.am@jag.gy"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^2.3"
+    }
+}
