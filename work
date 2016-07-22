@@ -1,0 +1,15 @@
+#!/usr/bin/php
+
+<?php
+
+require __DIR__ . '/bootstrap.php';
+
+use Symfony\Component\Console\Application;
+use Work\Console\Command\TimeLogCommand;
+use Work\Console\Command\TimeRemainingCommand;
+
+$application = new Application;
+$application->add(new TimeRemainingCommand);
+$application->add(new TimeLogCommand);
+$application->run();
+
