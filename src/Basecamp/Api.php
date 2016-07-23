@@ -22,15 +22,19 @@ class Api
      *
      * @param  string  $method
      * @param  string  $url
-     * @param  arrawy  $data
+     * @param  data  $array
      * @return mixed
      */
-    protected function request(string $method, string $url, array $data = [])
+    protected function request($method, $url, array $data = [])
     {
+        $defaults = [
+            'auth' => [getenv('BASECAMP_USERNAME'), getenv('BASECAMP_PASSWORD')]
+        ];
+
         return $this->request->send(
             $method,
             getenv('BASECAMP_URL') . $url,
-            $data
+            $defaults
         );
     }
 }

@@ -12,7 +12,7 @@ class Person extends Api
     public function me()
     {
         dd(
-            $thsi->request('GET', '/me.xml')
+            $this->request('GET', '/me.xml')
         );
     }
 }

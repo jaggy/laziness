@@ -34,11 +34,11 @@ class Request
      * @param  mixed  $data
      * @return void
      */
-    public function send(string $method, string $url, array $data = [])
+    public function send($method, $url, array $data = [])
     {
         $response = $this->guzzle->request($method, $url, $data);
 
-        return $this->transformKeys($this->xmlToArray($response));
+        return $this->transformKeys($this->xmlToArray($response->getBody()));
     }
 
     /**
@@ -47,7 +47,7 @@ class Request
      * @param  string  $response
      * @return array
      */
-    private function xmlToArray(string $response)
+    private function xmlToArray($response)
     {
         $xml  = simplexml_load_string($response);
         $json = json_encode($xml);
