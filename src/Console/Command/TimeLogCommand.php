@@ -25,7 +25,13 @@ class TimeLogCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        dd((new \Work\Basecamp\Person)->me());
+        // dd((new \Work\Basecamp\Person)->me());
+        $projects = (new \Work\Basecamp\Project)->all();
+
+        $projects->each(function ($project) use ($output) {
+            $output->writeln($project->name);
+        });
+
 
         // $name = $input->getArgument('name');
         //

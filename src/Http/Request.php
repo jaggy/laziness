@@ -32,7 +32,7 @@ class Request
      * @param  string  $method
      * @param  string  $url
      * @param  mixed  $data
-     * @return void
+     * @return stdClass
      */
     public function send($method, $url, array $data = [])
     {
