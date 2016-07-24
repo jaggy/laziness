@@ -21,7 +21,8 @@ class TimeLogCommand extends Command
                 InputArgument::OPTIONAL,
                 'Who do you want to greet?'
             )
-            ->addOption('description', 'd', InputOption::VALUE_NONE, 'Set the description immediately. Very useful when tied to githooks.')
+            ->addOption('project', 'p', InputOption::VALUE_REQUIRED, 'The id of the project that will be log on to.')
+            ->addOption('description', 'd', InputOption::VALUE_REQUIRED, 'The description of the task that will be logged.')
         ;
     }
 
@@ -29,19 +30,21 @@ class TimeLogCommand extends Command
     {
         $project = $this->getTargetProject($input, $output);
 
-        dd($project);
+        if (! $project) {
+            return $this->exit($output);
+        }
 
-        // $name = $input->getArgument('name');
-        //
-        // if ($input->getOption('yell')) {
-        //     $text = strtoupper($text);
-        // }
-        //
+        $description = $this->getLogDescription($input, $output);
+
+        if (! $description) {
+            return $this->exit($output);
+        }
+
         // $output->writeln($text);
     }
 
     /**
-     * Get the project the user wants to log hours to.
+     * Gjt the project the user wants to log hours to.
      *
      * @param  InputInterface  $input
      * @param  OutputInterface  $output
@@ -58,9 +61,24 @@ class TimeLogCommand extends Command
         $lines->prepend("Yow! Which project would you like to add an entry to?");
         $lines->push("Enter the id of the project: [Leeave blank to cancel]: ");
 
+
         return $projects[
-            $this->prompt($input, $output, $lines->implode("\n"))
-        ];
+            $selected = $this->prompt($input, $output, $lines->implode("\n"))
+        ] ?? false;
+    }
+
+    /**
+     * Set the description of the time entry.
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface  $output
+     * @return void
+     */
+    private function getLogDescription(InputInterface $input, OutputInterface $output)
+    {
+        $description = $input->getOption('description');
+
+        return $this->prompt($input, $output, "Log description [{$description}]: ", $description);
     }
 
     /**
@@ -79,5 +97,18 @@ class TimeLogCommand extends Command
         $question = new Question($question);
 
         return $this->getHelper('question')->ask($input, $output, $question);
+    }
+
+    /**
+     * Exit message.
+     *
+     * @param  OutputInterface  $output
+     * @return bool
+     */
+    private function exit(OutputInterface $output)
+    {
+        $output->writeln('Goodbye!');
+
+        return false;
     }
 }
