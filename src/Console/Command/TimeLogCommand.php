@@ -28,12 +28,15 @@ class TimeLogCommand extends Command
         // dd((new \Work\Basecamp\Person)->me());
         $projects = (new \Work\Basecamp\Project)->all();
 
-        $projects->each(function ($project) use ($output) {
-            $output->writeln($project->name);
+        $output->writeln('Yow! Which project would you like to add an entry to??');
+
+        $projects->each(function ($project, $index) use ($output) {
+            $selector = $index + 1;
+            $output->writeln("{$selector}: {$project->name}");
         });
 
 
-        // $name = $input->getArgument('name');
+        $name = $input->getArgument('name');
         //
         // if ($input->getOption('yell')) {
         //     $text = strtoupper($text);
