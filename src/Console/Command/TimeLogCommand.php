@@ -62,9 +62,7 @@ class TimeLogCommand extends Command
         $lines->push("Enter the id of the project: [Leeave blank to cancel]: ");
 
 
-        return $projects[
-            $selected = $this->prompt($input, $output, $lines->implode("\n"))
-        ] ?? false;
+        return $projects[$this->prompt($input, $output, $lines->implode("\n"))] ?? false;
     }
 
     /**
@@ -107,7 +105,7 @@ class TimeLogCommand extends Command
      */
     private function exit(OutputInterface $output)
     {
-        $output->writeln('Goodbye!');
+        $output->writeln('<comment>Goodbye!</comment>');
 
         return false;
     }
