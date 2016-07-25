@@ -36,7 +36,15 @@ class Request
      */
     public function send($method, $url, $data = null)
     {
-        $response = $this->guzzle->request($method, $url, $data);
+        $response = $this->guzzle->request(
+            $method,
+            $url,
+            $data
+        );
+
+        if ($method == 'POST') {
+            return true;
+        }
 
         return $this->xmlToArray($response->getBody());
     }

@@ -32,8 +32,6 @@ class TimeLogCommand extends Command
     {
         $project = $this->getTargetProject($input, $output);
 
-        dd($project->log('Dev > PHP > Basecamp cli module', 2.5));
-
         if (! $project) {
             return $this->exit($output);
         }
@@ -49,6 +47,8 @@ class TimeLogCommand extends Command
         if (! $hours) {
             return $this->exit($output);
         }
+
+        $project->log($description, $hours);
     }
 
     /**

@@ -23,12 +23,13 @@ class Api
     protected function request($method, $url, $data = null)
     {
         $parameters = [
-            'auth' => [getenv('BASECAMP_USERNAME'), getenv('BASECAMP_PASSWORD')]
+            'auth' => [getenv('BASECAMP_USERNAME'), getenv('BASECAMP_PASSWORD')],
+            'body' => $data,
+            'headers' => [
+                'Accept'       => 'application/xml',
+                'Content-Type' => 'application/xml',
+            ]
         ];
-
-        if ($data) {
-            $parameters['body'] = $data;
-        }
 
         return (new Request(new Guzzle))->send(
             $method,
