@@ -53,6 +53,8 @@ class TimeLogCommand extends Command
         }
 
         $project->log($description, $hours);
+
+        $output->writeln("<info>Time is not logged! You're good to go! (╯°□°）╯︵ ┻━┻</info>");
     }
 
     /**
@@ -74,9 +76,8 @@ class TimeLogCommand extends Command
             return ($index + 1) . ': ' . $project->name;
         });
 
-        $lines->prepend("Yow! Which project would you like to add an entry to?");
-        $lines->push("Enter the id of the project: [Leeave blank to cancel]: ");
-
+        $lines->prepend("Yow! (￣^￣)ゞ\nWhich project would you like to add an entry to?");
+        $lines->push("Enter the id of the project: [Leave blank to cancel]: ");
 
         return $projects[
             $this->prompt($input, $output, $lines->implode("\n")) - 1
@@ -136,34 +137,5 @@ class TimeLogCommand extends Command
     private function calculateRemainingHours(Collection $entries)
     {
         return TimeEntry::RENDERABLE_HOURS - $entries->pluck('hours')->sum();
-    }
-
-    /**
-     * Create a question handler.
-     *
-     * @param  InputInterface  $input
-     * @param  OutputInterface  $output
-     * @param  string  $question
-     * @param  mixed  $default
-     * @return mixed
-     */
-    private function prompt(InputInterface $input, OutputInterface $output, $question, $default = null)
-    {
-        return $this
-            ->getHelper('question')
-            ->ask($input, $output, new Question($question, $default));
-    }
-
-    /**
-     * Exit message.
-     *
-     * @param  OutputInterface  $output
-     * @return bool
-     */
-    private function exit(OutputInterface $output)
-    {
-        $output->writeln('<comment>Goodbye!</comment>');
-
-        return false;
     }
 }
