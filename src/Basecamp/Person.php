@@ -11,6 +11,8 @@ class Person extends Api
      */
     public function me()
     {
-        return $this->request('GET', '/me.xml');
+        return new static($this->arrayKeysToUnderscores(
+            $this->request('GET', '/me.xml')
+        ));
     }
 }

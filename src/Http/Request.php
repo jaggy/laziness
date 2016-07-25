@@ -38,7 +38,7 @@ class Request
     {
         $response = $this->guzzle->request($method, $url, $data);
 
-        return $this->transformKeys($this->xmlToArray($response->getBody()));
+        return $this->xmlToArray($response->getBody());
     }
 
     /**
@@ -53,23 +53,5 @@ class Request
         $json = json_encode($xml);
 
         return json_decode($json, $convert_to_array = true);
-    }
-
-    /**
-     * Convert the array keys from dashes to underscores.
-     *
-     * @param  array  $array
-     * @return array
-     */
-    private function transformKeys(array $array)
-    {
-        $convert_dashes_to_underscores = function ($key) {
-            return str_replace('-', '_', $key);
-        };
-
-        $values = array_values($array);
-        $keys   = array_map($convert_dashes_to_underscores, array_keys($array));
-
-        return array_combine($keys, $values);
     }
 }

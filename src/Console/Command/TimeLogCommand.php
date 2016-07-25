@@ -2,12 +2,14 @@
 
 namespace Work\Console\Command;
 
-use Work\Basecamp\Project;
+use Illuminate\Support\Collection;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Work\Basecamp\Project;
+use Work\Basecamp\TimeEntry;
 
 class TimeLogCommand extends Command
 {
@@ -40,7 +42,11 @@ class TimeLogCommand extends Command
             return $this->exit($output);
         }
 
-        // $output->writeln($text);
+        $hours = $this->getRenderedHours($input, $output, $project);
+
+        if (! $hours) {
+            return $this->exit($output);
+        }
     }
 
     /**
@@ -62,7 +68,9 @@ class TimeLogCommand extends Command
         $lines->push("Enter the id of the project: [Leeave blank to cancel]: ");
 
 
-        return $projects[$this->prompt($input, $output, $lines->implode("\n"))] ?? false;
+        return $projects[
+            $this->prompt($input, $output, $lines->implode("\n")) - 1
+        ] ?? false;
     }
 
     /**
@@ -70,13 +78,49 @@ class TimeLogCommand extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface  $output
-     * @return void
+     * @return string
      */
     private function getLogDescription(InputInterface $input, OutputInterface $output)
     {
         $description = $input->getOption('description');
 
         return $this->prompt($input, $output, "Log description [{$description}]: ", $description);
+    }
+
+    /**
+     * Get the rendered hours for the given task.
+     *
+     * @todo  The current limitation for this one is that the rendered hours ,
+     *        for the selected project is calculated, not all throughout
+     *        the basecamp api.
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface  $output
+     * @param  Project  $project
+     * @return float
+     */
+    private function getRenderedHours(InputInterface $input, OutputInterface $output, Project $project)
+    {
+        $hours = $input->getOption('description');
+        $remaining = $this->calculateRemainingHours($project->entries());
+
+        return $this->prompt(
+            $input,
+            $output,
+            "How many hours did this task take? [<comment>{$remaining} hours remaining</comment>]]: ",
+            false
+        );
+    }
+
+    /**
+     * Calculate the remaining renderable hours.
+     *
+     * @param  Collection  $entries
+     * @return float
+     */
+    private function calculateRemainingHours(Collection $entries)
+    {
+        return TimeEntry::RENDERABLE_HOURS - $entries->pluck('hours')->sum();
     }
 
     /**
