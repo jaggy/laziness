@@ -134,11 +134,9 @@ class TimeLogCommand extends Command
      */
     private function prompt(InputInterface $input, OutputInterface $output, $question, $default = null)
     {
-        $helper = $this->getHelper('question');
-
-        $question = new Question($question);
-
-        return $this->getHelper('question')->ask($input, $output, $question);
+        return $this
+            ->getHelper('question')
+            ->ask($input, $output, new Question($question));
     }
 
     /**

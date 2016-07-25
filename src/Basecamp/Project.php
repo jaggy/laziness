@@ -18,7 +18,8 @@ class Project extends Api
             TimeEntry::class
         );
 
-        return $entries->where('person_id', $me->id)
+        return $entries
+            ->where('person_id', $me->id)
             ->where('date', $today = date('Y-m-d'))
             ->values();
     }
