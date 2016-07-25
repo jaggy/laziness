@@ -25,11 +25,15 @@ class TimeLogCommand extends Command
             )
             ->addOption('project', 'p', InputOption::VALUE_REQUIRED, 'The id of the project that will be log on to.')
             ->addOption('description', 'd', InputOption::VALUE_REQUIRED, 'The description of the task that will be logged.')
+            ->addOption('hours', null, InputOption::VALUE_REQUIRED, 'The amount of hours rendered on the given task.')
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Remove the interaction for preset data')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->isForced = $input->getOption('force');
+
         $project = $this->getTargetProject($input, $output);
 
         if (! $project) {
@@ -60,6 +64,10 @@ class TimeLogCommand extends Command
      */
     private function getTargetProject(InputInterface $input, OutputInterface $output)
     {
+        if ($this->isForced && $project = $input->getOption('project')) {
+            return new Project(['id' => $project]);
+        }
+
         $projects = (new Project)->all();
 
         $lines = $projects->map(function ($project, $index) {
@@ -84,7 +92,9 @@ class TimeLogCommand extends Command
      */
     private function getLogDescription(InputInterface $input, OutputInterface $output)
     {
-        $description = $input->getOption('description');
+        if ($this->isForced && $description = $input->getOption('description')) {
+            return $description;
+        }
 
         return $this->prompt($input, $output, "Log description [{$description}]: ", $description);
     }
@@ -103,7 +113,10 @@ class TimeLogCommand extends Command
      */
     private function getRenderedHours(InputInterface $input, OutputInterface $output, Project $project)
     {
-        $hours = $input->getOption('description');
+        if ($this->isForced && $hours= $input->getOption('hours')) {
+            return $hours;
+        }
+
         $remaining = $this->calculateRemainingHours($project->entries());
 
         return $this->prompt(
