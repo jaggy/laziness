@@ -2,6 +2,7 @@
 
 namespace Work\Basecamp;
 
+use SimpleXMLElement;
 use GuzzleHttp\Client as Guzzle;
 use Thirteen\Fetchable\FetchableProperties;
 use Work\Http\Request;
@@ -16,19 +17,23 @@ class Api
      *
      * @param  string  $method
      * @param  string  $url
-     * @param  data  $array
+     * @param  mixed  $array
      * @return mixed
      */
-    protected function request($method, $url, array $data = [])
+    protected function request($method, $url, $data = null)
     {
-        $defaults = [
+        $parameters = [
             'auth' => [getenv('BASECAMP_USERNAME'), getenv('BASECAMP_PASSWORD')]
         ];
+
+        if ($data) {
+            $parameters['body'] = $data;
+        }
 
         return (new Request(new Guzzle))->send(
             $method,
             getenv('BASECAMP_URL') . $url,
-            $defaults
+            $parameters
         );
     }
 
@@ -50,5 +55,22 @@ class Api
         };
 
         return collect(array_map($transformToObject, $collection));
+    }
+
+    /**
+     * Return an XML when the object is rendered as a string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        $xml = new SimpleXMLElement('<time-entry />');
+        $attributes = array_flip($this->toArray());
+
+        array_walk_recursive($attributes, [$xml, 'addChild']);
+
+        $segments = explode("\n", $xml->asXml());
+
+        return $segments[1];
     }
 }

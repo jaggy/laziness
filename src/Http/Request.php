@@ -34,7 +34,7 @@ class Request
      * @param  mixed  $data
      * @return stdClass
      */
-    public function send($method, $url, array $data = [])
+    public function send($method, $url, $data = null)
     {
         $response = $this->guzzle->request($method, $url, $data);
 

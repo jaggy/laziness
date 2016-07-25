@@ -25,6 +25,31 @@ class Project extends Api
     }
 
     /**
+     * Log hours to the basecamp api.
+     *
+     * @param  string  $description
+     * @param  float  $hours
+     * @return void
+     */
+    public function log($description, $hours)
+    {
+        $me = (new Person)->me();
+
+        $entry = new TimeEntry([
+            'person-id'   => $me->id,
+            'date'        => date('Y-m-d'),
+            'hours'       => (string) $hours,
+            'description' => $description,
+        ]);
+
+        $this->request(
+            'POST',
+            "/projects/{$this->id}/time_entries.xml",
+            (string) $entry
+        );
+    }
+
+    /**
      * List out all the projects.
      *
      * @return \Illuminate\Support\Collection
