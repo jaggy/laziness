@@ -64,15 +64,13 @@ class TimeLogCommand extends Command
     private function confirmSubmission(InputInterface $input, OutputInterface $output, Project $project, $description, $hours)
     {
         $lines = [
-            "Project ID: {$project->id}",
-            "Log Description: {$description}",
-            "Rendered Hours: {$hours}",
+            "Project ID: <comment>{$project->id}</comment>",
+            "Log Description: <comment>{$description}</comment>",
+            "Rendered Hours: <comment>{$hours}</comment>",
             "Is the provided data correct? [n]",
         ];
 
-        $question = '<comment>' . implode("\n", $lines) . '</comment>';
-
-        return $this->confirm($input, $output, $question);
+        return $this->confirm($input, $output, implode("\n", $lines));
     }
 
     /**
@@ -141,7 +139,7 @@ class TimeLogCommand extends Command
      */
     public function getRenderedHours(InputInterface $input, OutputInterface $output, Project $project)
     {
-        $remaining = $this->calculateRemainingHours($project->entries());
+        $remaining = $project->remainingHours();
 
         if ($this->isForced && $hours = $input->getOption('hours')) {
             return $hours;
@@ -216,16 +214,5 @@ class TimeLogCommand extends Command
         }
 
         return null;
-    }
-
-    /**
-     * Calculate the remaining renderable hours.
-     *
-     * @param  Collection  $entries
-     * @return float
-     */
-    private function calculateRemainingHours(Collection $entries)
-    {
-        return TimeEntry::RENDERABLE_HOURS - $entries->pluck('hours')->sum();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Work\Console\Command;
 
+use Work\Basecamp\Project;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,5 +18,12 @@ class TimeRemainingCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $project = new Project(['id' => getenv('PROJECT_ID')]);
+
+        $output->writeln('<comment>Calculating your remaining hours.. [Internet speed dependent.. sorry]</comment>');
+        $remaining = $project->remainingHours();
+
+
+        $output->writeln("<info>You have {$remaining} hour/s left! ヽ(ﾟ〇ﾟ)ﾉ</info>");
     }
 }
