@@ -29,7 +29,6 @@ class TimeLogCommand extends Command
         ;
     }
 
-    /** @todo  Clean up all these damned ifs **/
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->isForced = $input->getOption('force');
@@ -37,37 +36,122 @@ class TimeLogCommand extends Command
         $output->writeln('Yow! (￣^￣)ゞ');
         $output->writeln('Which project would you like to add an entry to? [It might take a while to fetch them projects]');
 
-        if (! $project = $this->getForcedOption($input, 'project')) {
-            $project = $this->getTargetProject($input, $output);
+        $project     = $this->getTargetProject($input, $output);
+        $description = $this->getLogDescription($input, $output);
+        $hours       = $this->getRenderedHours($input, $output, $project);
+
+        // Confirm if user is sure about the data (when it's not forced)
+        if (! $this->isForced && ! $this->confirmSubmission($input, $output, $project, $description, $hours)) {
+            $this->exit($output);
         }
 
-        if (! $project instanceof Project) {
-            $project = new Project(['id' => $project]);
+        $output->writeln('Sending the data to basecamp...');
+        $project->log($description, $hours);
+
+        $output->writeln("<info>Time is now logged! You're good to go! (╯°□°）╯︵ ┻━┻</info>");
+    }
+
+    /**
+     * Confirm the submission of the data.
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface  $output
+     * @param  Project  $project
+     * @param  string  $description
+     * @param  float  $hours
+     * @return bool
+     */
+    private function confirmSubmission(InputInterface $input, OutputInterface $output, Project $project, $description, $hours)
+    {
+        $lines = [
+            "Project ID: {$project->id}",
+            "Log Description: {$description}",
+            "Rendered Hours: {$hours}",
+            "Is the provided data correct? [n]",
+        ];
+
+        $question = '<comment>' . implode("\n", $lines) . '</comment>';
+
+        return $this->confirm($input, $output, $question);
+    }
+
+    /**
+     * Get the project.
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface  $output
+     * @return Project
+     */
+    public function getTargetProject(InputInterface $input, OutputInterface $output)
+    {
+        if ($this->isForced && $project = $input->getOption('project')) {
+            return new Project(['id' => $project]);
         }
+
+        if ($this->isForced && $project = getenv('PROJECT_ID')) {
+            $output->writeln("<comment>Using project id #{$project}!</comment>");
+
+            return new Project(['id' => $project]);
+        }
+
+        $project = $this->promptTargetProject($input, $output);
 
         if (! $project) {
             return $this->exit($output);
         }
 
-        if (! $description = $this->getForcedOption($input, 'description')) {
-            $description = $this->getLogDescription($input, $output);
+        return $project;
+    }
+
+    /**
+     * Get the description for the log.
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface  $output
+     * @return string
+     */
+    public function getLogDescription(InputInterface $input, OutputInterface $output)
+    {
+        if ($prefix = getenv('LOG_PREFIX')) {
+            $prefix .= ' ';
         }
+
+        if ($this->isForced && $description = $input->getOption('description')) {
+            $output->writeln("<comment>Using the description '{$prefix} {$description}'</comment");
+
+            return $prefix  . $description;
+        }
+
+        $description = $this->promptLogDescription($input, $output);
 
         if (! $description) {
             return $this->exit($output);
         }
 
-        if (! $hours = $this->getForcedOption($input, 'hours')) {
-            $hours = $this->getRenderedHours($input, $output, $project);
+        return $prefix . $description;
+    }
+
+    /**
+     * Get the rendered hours.
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface  $output
+     * @param  Project  $project
+     * @return float
+     */
+    public function getRenderedHours(InputInterface $input, OutputInterface $output, Project $project)
+    {
+        if ($this->isForced && $hours = $input->getOption('hours')) {
+            return $hours;
         }
+
+        $hours = $this->promptRenderedHours($input, $output, $project);
 
         if (! $hours) {
             return $this->exit($output);
         }
 
-        $project->log($description, $hours);
-
-        $output->writeln("<info>Time is not logged! You're good to go! (╯°□°）╯︵ ┻━┻</info>");
+        return $hours;
     }
 
     /**
@@ -77,9 +161,13 @@ class TimeLogCommand extends Command
      * @param  OutputInterface  $output
      * @return string
      */
-    private function getLogDescription(InputInterface $input, OutputInterface $output)
+    private function promptLogDescription(InputInterface $input, OutputInterface $output)
     {
-        $description = $input->getOption('description');
+        if ($prefix = getenv('LOG_PREFIX')) {
+            $prefix .= ' ';
+        }
+
+        $description = $prefix . $input->getOption('description');
 
         return $this->prompt($input, $output, "Log description [{$description}]: ", $description);
     }
@@ -96,7 +184,7 @@ class TimeLogCommand extends Command
      * @param  Project  $project
      * @return float
      */
-    private function getRenderedHours(InputInterface $input, OutputInterface $output, Project $project)
+    private function promptRenderedHours(InputInterface $input, OutputInterface $output, Project $project)
     {
         $remaining = $this->calculateRemainingHours($project->entries());
 

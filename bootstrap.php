@@ -10,3 +10,8 @@ use Illuminate\Filesystem\Filesystem;
 Filesystem::macro('touch', function ($filename) {
     $this->append($filename, '');
 });
+
+if ((new Filesystem)->exists('.work')) {
+    (new Dotenv(getcwd(), '.work'))->load();
+}
+

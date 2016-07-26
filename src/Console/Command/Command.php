@@ -5,6 +5,7 @@ namespace Work\Console\Command;
 use Work\Basecamp\Project;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,6 +30,18 @@ class Command extends SymfonyCommand
     }
 
     /**
+     * Ask a yes or no question.
+     *
+     * @return bool
+     */
+    protected function confirm(InputInterface $input, OutputInterface $output, $question)
+    {
+        return $this
+            ->getHelper('question')
+            ->ask($input, $output, new ConfirmationQuestion($question, false));
+    }
+
+    /**
      * Exit message.
      *
      * @param  OutputInterface  $output
@@ -38,7 +51,7 @@ class Command extends SymfonyCommand
     {
         $output->writeln("<comment>Oh.. okay. I'll see you later then. (￣﹃￣)ゞ</comment>");
 
-        return false;
+        exit;
     }
 
     /**
@@ -48,7 +61,7 @@ class Command extends SymfonyCommand
      * @param  OutputInterface  $output
      * @return Project
      */
-    protected function getTargetProject(InputInterface $input, OutputInterface $output)
+    protected function promptTargetProject(InputInterface $input, OutputInterface $output)
     {
         $projects = (new Project)->all();
 

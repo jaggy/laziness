@@ -64,7 +64,7 @@ class Config
     {
         $this->filesystem->append(
             static::FILENAME,
-            "LOG_PREFIX={$prefix}\n"
+            "LOG_PREFIX=\"{$prefix}\"\n"
         );
     }
 }

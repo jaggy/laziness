@@ -31,7 +31,7 @@ class InitCommand extends Command
 
         // Fetch all the projects from basecamp
         // Append PROJECT_ID to the .work file
-        $project = $this->getTargetProject($input, $output);
+        $project = $this->promptTargetProject($input, $output);
         $config->registerDefaultProject($project);
 
         // Ask if a prefix is needed for the logging [ Dev > Frontend > Vue.js ]
