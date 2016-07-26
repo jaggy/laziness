@@ -35,7 +35,7 @@ class TimeLogCommand extends Command
         $this->isForced = $input->getOption('force');
 
         $output->writeln('Yow! (￣^￣)ゞ');
-        $output->writeln('Which project would you like to add an entry to?');
+        $output->writeln('Which project would you like to add an entry to? [It might take a while to fetch them projects]');
 
         if (! $project = $this->getForcedOption($input, 'project')) {
             $project = $this->getTargetProject($input, $output);
@@ -58,7 +58,7 @@ class TimeLogCommand extends Command
         }
 
         if (! $hours = $this->getForcedOption($input, 'hours')) {
-            $hours = $this->getRenderedHours($input, $output);
+            $hours = $this->getRenderedHours($input, $output, $project);
         }
 
         if (! $hours) {
@@ -79,6 +79,8 @@ class TimeLogCommand extends Command
      */
     private function getLogDescription(InputInterface $input, OutputInterface $output)
     {
+        $description = $input->getOption('description');
+
         return $this->prompt($input, $output, "Log description [{$description}]: ", $description);
     }
 
@@ -96,10 +98,6 @@ class TimeLogCommand extends Command
      */
     private function getRenderedHours(InputInterface $input, OutputInterface $output, Project $project)
     {
-        if ($this->isForced && $hours= $input->getOption('hours')) {
-            return $hours;
-        }
-
         $remaining = $this->calculateRemainingHours($project->entries());
 
         return $this->prompt(
