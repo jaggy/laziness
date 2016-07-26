@@ -72,6 +72,7 @@ To initialize your project, you just need to run `work init`. From there, it'll 
 | Command          | Description                                          |
 |------------------|------------------------------------------------------|
 | `init`           | Initialize the current directory as a work project.  |
+| `scrum`          | Start a SCRUM session and log to basecamp.           |
 | `time:log`       | Log a time entry to basecamp.                        |
 | `time:remaining` | Fetch the remaining hours to render from basecamp.   |
 

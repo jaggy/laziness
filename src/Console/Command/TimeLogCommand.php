@@ -80,7 +80,7 @@ class TimeLogCommand extends Command
      * @param  OutputInterface  $output
      * @return Project
      */
-    public function getTargetProject(InputInterface $input, OutputInterface $output)
+    private function getTargetProject(InputInterface $input, OutputInterface $output)
     {
         if ($this->isForced && $project = $input->getOption('project')) {
             return new Project(['id' => $project]);
