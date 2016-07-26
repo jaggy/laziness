@@ -5,6 +5,16 @@ namespace Work\Basecamp;
 class Project extends Api
 {
     /**
+     * Calculate the remaining hours.
+     *
+     * @return float
+     */
+    public function remainingHours()
+    {
+        return TimeEntry::RENDERABLE_HOURS - $this->entries()->pluck('hours')->sum();
+    }
+
+    /**
      * Fetch all the times from the given project id.
      *
      * @return \Illuminate\Support\Collection

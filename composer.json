@@ -12,11 +12,15 @@
         "symfony/console": "^3.1",
         "guzzlehttp/guzzle": "^6.2",
         "illuminate/support": "^5.2",
-        "thirteen/fetchable": "^1.0"
+        "thirteen/fetchable": "^1.0",
+        "illuminate/filesystem": "^5.2"
     },
     "autoload": {
         "psr-4": {
             "Work\\": "./src"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     }
 }
