@@ -67,7 +67,7 @@ class TimeLogCommand extends Command
             "Project ID: <comment>{$project->id}</comment>",
             "Log Description: <comment>{$description}</comment>",
             "Rendered Hours: <comment>{$hours}</comment>",
-            "Is the provided data correct? [n]",
+            "Is the provided data correct? [n] ",
         ];
 
         return $this->confirm($input, $output, implode("\n", $lines));
