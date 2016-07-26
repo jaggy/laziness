@@ -76,6 +76,17 @@ To initialize your project, you just need to run `work init`. From there, it'll 
 | `time:log`       | Log a time entry to basecamp.                        |
 | `time:remaining` | Fetch the remaining hours to render from basecamp.   |
 
+## Notes
+
+**Fetch the current SSID**
+
+```
+/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I | awk '/ SSID/ {print substr($0, index($0, $2))}'
+```
+
+
 ## Todo
 - [ ] Add caching to avoid repeated requests to basecamp.
 - [ ] Add an offline handler to send the basecamp log once an internet connection is detected.
+
+
