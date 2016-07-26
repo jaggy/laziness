@@ -29,23 +29,37 @@ class TimeLogCommand extends Command
         ;
     }
 
+    /** @todo  Clean up all these damned ifs **/
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->isForced = $input->getOption('force');
 
-        $project = $this->getTargetProject($input, $output);
+        $output->writeln('Yow! (￣^￣)ゞ');
+        $output->writeln('Which project would you like to add an entry to?');
+
+        if (! $project = $this->getForcedOption($input, 'project')) {
+            $project = $this->getTargetProject($input, $output);
+        }
+
+        if (! $project instanceof Project) {
+            $project = new Project(['id' => $project]);
+        }
 
         if (! $project) {
             return $this->exit($output);
         }
 
-        $description = $this->getLogDescription($input, $output);
+        if (! $description = $this->getForcedOption($input, 'description')) {
+            $description = $this->getLogDescription($input, $output);
+        }
 
         if (! $description) {
             return $this->exit($output);
         }
 
-        $hours = $this->getRenderedHours($input, $output, $project);
+        if (! $hours = $this->getForcedOption($input, 'hours')) {
+            $hours = $this->getRenderedHours($input, $output);
+        }
 
         if (! $hours) {
             return $this->exit($output);
@@ -57,33 +71,6 @@ class TimeLogCommand extends Command
     }
 
     /**
-     * Gjt the project the user wants to log hours to.
-     *
-     * @param  InputInterface  $input
-     * @param  OutputInterface  $output
-     * @return Project
-     */
-    private function getTargetProject(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->isForced && $project = $input->getOption('project')) {
-            return new Project(['id' => $project]);
-        }
-
-        $projects = (new Project)->all();
-
-        $lines = $projects->map(function ($project, $index) {
-            return ($index + 1) . ': ' . $project->name;
-        });
-
-        $lines->prepend("Yow! (￣^￣)ゞ\nWhich project would you like to add an entry to?");
-        $lines->push("Enter the id of the project: [Leave blank to cancel]: ");
-
-        return $projects[
-            $this->prompt($input, $output, $lines->implode("\n")) - 1
-        ] ?? false;
-    }
-
-    /**
      * Set the description of the time entry.
      *
      * @param  InputInterface  $input
@@ -92,10 +79,6 @@ class TimeLogCommand extends Command
      */
     private function getLogDescription(InputInterface $input, OutputInterface $output)
     {
-        if ($this->isForced && $description = $input->getOption('description')) {
-            return $description;
-        }
-
         return $this->prompt($input, $output, "Log description [{$description}]: ", $description);
     }
 
@@ -125,6 +108,22 @@ class TimeLogCommand extends Command
             "How many hours did this task take? [<comment>{$remaining} hours remaining</comment>]]: ",
             false
         );
+    }
+
+    /**
+     * Fetch the forced value if it exists.
+     *
+     * @param  InputInterface  $input
+     * @param  string  $option
+     * @return mixed
+     */
+    private function getForcedOption(InputInterface $input, $option)
+    {
+        if ($this->isForced && $option = $input->getOption($option)) {
+            return $option;
+        }
+
+        return null;
     }
 
     /**

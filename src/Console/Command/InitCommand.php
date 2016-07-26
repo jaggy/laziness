@@ -2,10 +2,12 @@
 
 namespace Work\Console\Command;
 
+use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Work\Config\Config;
 
 class InitCommand extends Command
 {
@@ -17,10 +19,43 @@ class InitCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $config = $this->newConfig();
+
         // Append to .work to gitignore
+        $config->addToVcsIgnores();
+        $this->print($output, 'Adding .work to .gitignore.');
+
         // Create a .work file
+        $config->createProjectConfig();
+        $this->print($output, 'Creating project configuration.');
+
         // Fetch all the projects from basecamp
         // Append PROJECT_ID to the .work file
+        $project = $this->getTargetProject($input, $output);
+        $config->registerDefaultProject($project);
+
         // Ask if a prefix is needed for the logging [ Dev > Frontend > Vue.js ]
+    }
+
+    /**
+     * Create a new config handler.
+     *
+     * @return Config
+     */
+    private function newConfig()
+    {
+        return new Config(new Filesystem);
+    }
+
+    /**
+     * Print the line with colorization.
+     *
+     * @param  OutputInterface  $output
+     * @param  string  $message
+     * @return void
+     */
+    private function print(OutputInterface $output, $message)
+    {
+        $output->writeln("<comment>{$message}</comment>");
     }
 }
