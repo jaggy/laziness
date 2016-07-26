@@ -86,6 +86,6 @@ class Config
             $postCommitHook = '.git/hooks/post-commit'
         );
 
-        chmod($postCommitHook, 777); // I know, I hate this too.
+        chmod($postCommitHook, 0755); // I know, I hate this too.
     }
 }
