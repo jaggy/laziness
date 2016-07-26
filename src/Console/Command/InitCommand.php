@@ -33,10 +33,15 @@ class InitCommand extends Command
         // Append PROJECT_ID to the .work file
         $project = $this->promptTargetProject($input, $output);
         $config->registerDefaultProject($project);
+        $this->print($output, "Registered project #{$project->id} to your config.");
 
         // Ask if a prefix is needed for the logging [ Dev > Frontend > Vue.js ]
         $prefix = $this->prompt($input, $output, 'Add your log prefix [Leave blank for none]: ');
         $config->registerLoggingPrefix($prefix);
+
+        // Add the post-commit hook.
+        $config->registerPostCommitHook();
+        $this->print($output, "Registered a post-commit to .git/hooks");
 
         $this->print($output, "You're all set! ヽ(ﾟ〇ﾟ)ﾉ");
     }

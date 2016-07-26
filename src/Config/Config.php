@@ -67,4 +67,25 @@ class Config
             "LOG_PREFIX=\"{$prefix}\"\n"
         );
     }
+
+    /**
+     * Register the post-commit hook.
+     *
+     * @return void
+     */
+    public function registerPostCommitHook()
+    {
+        $hooks = getcwd() . '/.git/hooks';
+
+        if (! $this->filesystem->exists($hooks)) {
+            $this->filesystem->makeDirectory($hooks);
+        }
+
+        $this->filesystem->copy(
+            __DIR__ . '/../../githooks/post-commit',
+            $postCommitHook = '.git/hooks/post-commit'
+        );
+
+        chmod($postCommitHook, 777); // I know, I hate this too.
+    }
 }

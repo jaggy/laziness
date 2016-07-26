@@ -1,6 +1,6 @@
 {
-    "name": "jaggy/laziness",
-    "description": "Laziness Scripts",
+    "name": "jaggy/work-scripts",
+    "description": "My scripts for work.",
     "authors": [
         {
             "name": "Jaggy Gauran",
@@ -22,5 +22,6 @@
         "files": [
             "src/helpers.php"
         ]
-    }
+    },
+    "bin": ["bin/work"]
 }
