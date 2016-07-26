@@ -35,6 +35,10 @@ class InitCommand extends Command
         $config->registerDefaultProject($project);
 
         // Ask if a prefix is needed for the logging [ Dev > Frontend > Vue.js ]
+        $prefix = $this->prompt($input, $output, 'Add your log prefix [Leave blank for none]: ');
+        $config->registerLoggingPrefix($prefix);
+
+        $this->print($output, "You're all set! ヽ(ﾟ〇ﾟ)ﾉ");
     }
 
     /**

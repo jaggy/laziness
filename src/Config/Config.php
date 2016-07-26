@@ -50,7 +50,21 @@ class Config
     {
         $this->filesystem->append(
             static::FILENAME,
-            "PROJECT_ID={$project->id}"
+            "PROJECT_ID={$project->id}\n"
+        );
+    }
+
+    /**
+     * Register the prefix for your logging needs.
+     *
+     * @param  string  $prefix
+     * @return void
+     */
+    public function registerLoggingPrefix($prefix)
+    {
+        $this->filesystem->append(
+            static::FILENAME,
+            "LOG_PREFIX={$prefix}\n"
         );
     }
 }
