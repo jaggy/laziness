@@ -76,6 +76,6 @@ function run(argv) {
   var skype = new Skype;
 
   skype.focus();
-  skype.open_conversation_with('C&T');
+  skype.open_conversation_with($.getenv('SKYPE_CONVERSATION'));
   skype.send(message);
 }
