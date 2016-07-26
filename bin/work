@@ -1,13 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-if (file_exists(__DIR__ . '/bootstrap.php')) {
-    require __DIR__ . '/bootstrap.php';
-} else if (file_exists(__DIR__ . '/../bootstrap.php')) {
-    require __DIR__ . '/../bootstrap.php';
-} else {
-    require __DIR__ . '/../../../bootstrap.php';
-}
+require __DIR__ . '/../bootstrap.php';
 
 use Symfony\Component\Console\Application;
 use Work\Console\Command\InitCommand;
