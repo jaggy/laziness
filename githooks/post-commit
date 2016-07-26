@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+exec < /dev/tty
+
+while true; do
+    COMMIT_MESSAGE=`git log -1 --pretty=%B`
+
+    ~/code/work/scripts.git/work time:log --description="$COMMIT_MESSAGE" --force
+
+    break;
+done

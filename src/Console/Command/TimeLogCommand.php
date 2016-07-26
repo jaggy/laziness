@@ -34,7 +34,7 @@ class TimeLogCommand extends Command
         $this->isForced = $input->getOption('force');
 
         $output->writeln('Yow! (￣^￣)ゞ');
-        $output->writeln('Which project would you like to add an entry to? [It might take a while to fetch them projects]');
+        $output->writeln('Which project would you like to add an entry to? [It might take a while to fetch the project list]');
 
         $project     = $this->getTargetProject($input, $output);
         $description = $this->getLogDescription($input, $output);
@@ -46,7 +46,7 @@ class TimeLogCommand extends Command
         }
 
         $output->writeln('Sending the data to basecamp...');
-        // $project->log($description, $hours);
+        $project->log($description, $hours);
 
         $output->writeln("<info>Time is now logged! You're good to go! (╯°□°）╯︵ ┻━┻</info>");
     }
