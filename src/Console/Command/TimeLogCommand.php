@@ -46,7 +46,7 @@ class TimeLogCommand extends Command
         }
 
         $output->writeln('Sending the data to basecamp...');
-        $project->log($description, $hours);
+        // $project->log($description, $hours);
 
         $output->writeln("<info>Time is now logged! You're good to go! (╯°□°）╯︵ ┻━┻</info>");
     }
@@ -97,7 +97,7 @@ class TimeLogCommand extends Command
         $project = $this->promptTargetProject($input, $output);
 
         if (! $project) {
-            return $this->exit($output);
+            $this->exit($output);
         }
 
         return $project;
@@ -117,15 +117,15 @@ class TimeLogCommand extends Command
         }
 
         if ($this->isForced && $description = $input->getOption('description')) {
-            $output->writeln("<comment>Using the description '{$prefix} {$description}'</comment");
+            $output->writeln("<comment>Using the description '{$prefix}{$description}'</comment>");
 
-            return $prefix  . $description;
+            return $prefix . $description;
         }
 
         $description = $this->promptLogDescription($input, $output);
 
         if (! $description) {
-            return $this->exit($output);
+            $this->exit($output);
         }
 
         return $prefix . $description;
@@ -141,14 +141,22 @@ class TimeLogCommand extends Command
      */
     public function getRenderedHours(InputInterface $input, OutputInterface $output, Project $project)
     {
+        $remaining = $this->calculateRemainingHours($project->entries());
+
         if ($this->isForced && $hours = $input->getOption('hours')) {
             return $hours;
         }
 
-        $hours = $this->promptRenderedHours($input, $output, $project);
+        $hours = (float) $this->promptRenderedHours($input, $output, $remaining);
 
         if (! $hours) {
-            return $this->exit($output);
+            $this->exit($output);
+        }
+
+        if ($hours > $remaining) {
+            $output->writeln('<error>Rendered hours input is not valid.</error>');
+
+            $this->exit($output);
         }
 
         return $hours;
@@ -181,17 +189,15 @@ class TimeLogCommand extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface  $output
-     * @param  Project  $project
+     * @param  float  $remainingHours
      * @return float
      */
-    private function promptRenderedHours(InputInterface $input, OutputInterface $output, Project $project)
+    private function promptRenderedHours(InputInterface $input, OutputInterface $output, $remainingHours)
     {
-        $remaining = $this->calculateRemainingHours($project->entries());
-
         return $this->prompt(
             $input,
             $output,
-            "How many hours did this task take? [<comment>{$remaining} hours remaining</comment>]]: ",
+            "How many hours did this task take? [<comment>{$remainingHours} hours remaining</comment>]]: ",
             false
         );
     }
