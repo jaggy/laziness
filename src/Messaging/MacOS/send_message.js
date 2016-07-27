@@ -37,7 +37,7 @@ class Keyboard
 
     this.system.keystroke(keystrokes, { using: modifiers });
 
-    delay(0.4);
+    delay(0.75);
   }
 
   send (keystrokes) {
