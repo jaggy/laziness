@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Work\Exceptions\Tantrum;
 use Work\Messaging\Skype;
 use Work\Network\Network;
+use Work\Cache\Cache;
 
 class TimeInCommand extends Command
 {
@@ -22,11 +23,38 @@ class TimeInCommand extends Command
     {
         $greeting = $this->generateGreeting();
 
+        if ($this->hasLogged()) {
+            $output->writeln("<info>Sir! You have already timed in today, sir! (￣^￣)ゞ</info>");
+            exit;
+        }
+
         if (! $this->inTheOffice()) {
             $this->throwTantrum();
         }
 
         (new Skype)->send($greeting);
+
+        $this->cacheTimeIn($greeting);
+    }
+
+    /**
+     * Check if the user has already logged today.
+     *
+     * @return bool
+     */
+    private function hasLogged()
+    {
+        return Cache::has("time:in");
+    }
+
+    /**
+     * Cache the greeting log for today.
+     *
+     * @return void
+     */
+    private function cacheTimeIn($greeting)
+    {
+        Cache::put("time:in", true, $day = 1440);
     }
 
     /**
