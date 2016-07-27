@@ -44,9 +44,7 @@ class TimeInCommand extends Command
      */
     private function hasLogged()
     {
-        $today = strtotime(date('Ymd'));
-
-        return Cache::has("{$today}.time:in");
+        return Cache::has("time:in");
     }
 
     /**
@@ -56,9 +54,7 @@ class TimeInCommand extends Command
      */
     private function cacheTimeIn($greeting)
     {
-        $today = strtotime(date('Ymd'));
-
-        Cache::put("{$today}.time:in", true, $day = 1440);
+        Cache::put("time:in", true, $day = 1440);
     }
 
     /**
