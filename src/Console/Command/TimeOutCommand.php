@@ -10,7 +10,6 @@ use Work\Basecamp\Project;
 use Work\Exceptions\Tantrum;
 use Work\Exceptions\Table;
 use Work\Messaging\Skype;
-use Work\Network\Network;
 use Work\Cache\Cache;
 
 class TimeOutCommand extends Command
@@ -62,15 +61,5 @@ class TimeOutCommand extends Command
     private function cacheTimeOut()
     {
         Cache::put('time:out', true);
-    }
-
-    /**
-     * Check where you're working. You better not work on office projects outside!
-     *
-     * @return bool
-     */
-    private function inTheOffice()
-    {
-        return getenv('OFFICE_WIFI') == Network::ssid();
     }
 }
