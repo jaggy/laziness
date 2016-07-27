@@ -82,8 +82,8 @@ class Config
         }
 
         $this->filesystem->copy(
-            __DIR__ . '/../../githooks/post-commit',
-            $postCommitHook = '.git/hooks/post-commit'
+            __DIR__ . '/../../setup/githooks/post-commit',
+            $postCommitHook = $hooks . '/post-commit'
         );
 
         chmod($postCommitHook, 0755); // I know, I hate this too.
