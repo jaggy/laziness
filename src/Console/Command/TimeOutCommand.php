@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Work\Basecamp\Project;
 use Work\Exceptions\Tantrum;
+use Work\Exceptions\Table;
 use Work\Messaging\Skype;
 use Work\Network\Network;
 use Work\Cache\Cache;
@@ -25,7 +26,7 @@ class TimeOutCommand extends Command
         $project = new Project(['id' => getenv('PROJECT_ID')]);
 
         if (($hours = $project->remainingHours()) > 0) {
-            throw Tantrum::table("You have {$hours} hour/s remaining dammit! LOG IT! (╯°□°）╯︵ ┻━┻");
+            throw Table::out("You have {$hours} hour/s remaining dammit! LOG IT! (╯°□°）╯︵ ┻━┻");
         }
 
         if ($this->hasLogged()) {
