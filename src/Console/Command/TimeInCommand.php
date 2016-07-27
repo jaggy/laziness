@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Work\Exceptions\Tantrum;
 use Work\Messaging\Skype;
-use Work\Network\Network;
 use Work\Cache\Cache;
 
 class TimeInCommand extends Command
@@ -71,15 +70,5 @@ class TimeInCommand extends Command
         }
 
         return array_random(['gpm', "Afternoon!", 'Good afternoon.', 'Afternoon~', 'Good afternoon. :D']);
-    }
-
-    /**
-     * Check where you're working. You better not work on office projects outside!
-     *
-     * @return bool
-     */
-    private function inTheOffice()
-    {
-        return getenv('OFFICE_WIFI') == Network::ssid();
     }
 }

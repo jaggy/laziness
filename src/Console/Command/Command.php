@@ -2,7 +2,6 @@
 
 namespace Work\Console\Command;
 
-use Work\Basecamp\Project;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -10,6 +9,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Work\Basecamp\Project;
+use Work\Network\Network;
 
 class Command extends SymfonyCommand
 {
@@ -74,5 +75,15 @@ class Command extends SymfonyCommand
         return $projects[
             $this->prompt($input, $output, $lines->implode("\n")) - 1
         ] ?? false;
+    }
+
+    /**
+     * Check where you're working. You better not work on office projects outside!
+     *
+     * @return bool
+     */
+    protected function inTheOffice()
+    {
+        return getenv('OFFICE_WIFI') == Network::ssid();
     }
 }

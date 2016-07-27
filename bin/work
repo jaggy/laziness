@@ -10,6 +10,7 @@ use Work\Console\Command\TimeLogCommand;
 use Work\Console\Command\TimeRemainingCommand;
 use Work\Console\Command\TimeInCommand;
 use Work\Console\Command\TimeOutCommand;
+use Work\Console\Command\BrbCommand;
 
 $application = new Application;
 $application->add(new InitCommand);
@@ -17,6 +18,7 @@ $application->add(new TimeRemainingCommand);
 $application->add(new TimeLogCommand);
 $application->add(new TimeInCommand);
 $application->add(new TimeOutCommand);
+$application->add(new BrbCommand);
 $application->add(new ScrumCommand);
 $application->run();
 
