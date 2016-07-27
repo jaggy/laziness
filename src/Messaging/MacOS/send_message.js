@@ -1,3 +1,5 @@
+'use strict';
+
 ObjC.import('stdlib')
 
 class Keyboard
@@ -72,10 +74,14 @@ class Skype
 }
 
 function run(argv) {
-  var message = argv[0];
-  var skype = new Skype;
+  var message  = argv[0];
+  var terminal = Application('iTerm2');
+  var skype    = new Skype;
 
   skype.focus();
   skype.open_conversation_with($.getenv('SKYPE_CONVERSATION'));
   skype.send(message);
+
+  delay(2);
+  terminal.activate();
 }
