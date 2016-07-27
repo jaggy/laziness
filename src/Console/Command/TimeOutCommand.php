@@ -6,6 +6,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Work\Basecamp\Project;
+use Work\Exceptions\Tantrum;
 use Work\Messaging\Skype;
 use Work\Network\Network;
 use Work\Cache\Cache;
@@ -20,13 +22,19 @@ class TimeOutCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $project = new Project(['id' => getenv('PROJECT_ID')]);
+
+        if (($hours = $project->remainingHours()) > 0) {
+            throw Tantrum::table("You have {$hours} hour/s remaining dammit! LOG IT! (╯°□°）╯︵ ┻━┻");
+        }
+
         if ($this->hasLogged()) {
             $output->writeln("<info>You're already out! (￣﹃￣)</info>");
             exit;
         }
 
         if (! $this->inTheOffice()) {
-            $this->throwTantrum();
+            throw Tantrum::overtime();
         }
 
         $output->writeln("<info>Peace out! (╯°□°）╯︵ ┻━┻</info>");
@@ -63,15 +71,5 @@ class TimeOutCommand extends Command
     private function inTheOffice()
     {
         return getenv('OFFICE_WIFI') == Network::ssid();
-    }
-
-    /**
-     * Throw a tantrum.
-     *
-     * @return void
-     */
-    public function throwTantrum()
-    {
-        throw Tantrum::overtime();
     }
 }

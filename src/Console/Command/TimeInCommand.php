@@ -29,7 +29,7 @@ class TimeInCommand extends Command
         }
 
         if (! $this->inTheOffice()) {
-            $this->throwTantrum();
+            throw Tantrum::overtime();
         }
 
         (new Skype)->send($greeting);
@@ -81,15 +81,5 @@ class TimeInCommand extends Command
     private function inTheOffice()
     {
         return getenv('OFFICE_WIFI') == Network::ssid();
-    }
-
-    /**
-     * Throw a tantrum.
-     *
-     * @return void
-     */
-    public function throwTantrum()
-    {
-        throw Tantrum::overtime();
     }
 }

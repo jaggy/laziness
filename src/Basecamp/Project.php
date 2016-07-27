@@ -13,8 +13,8 @@ class Project extends Api
      */
     public function remainingHours()
     {
-        if (! $logged = Cache::get('logged')) {
-            Cache::put('logged', $logged = $this->entries()->pluck('hours')->sum());
+        if (! $logged = Cache::get('time:remaining')) {
+            Cache::put('time:remaining', $logged = $this->entries()->pluck('hours')->sum());
         }
 
         return TimeEntry::RENDERABLE_HOURS - $logged;
@@ -72,7 +72,7 @@ class Project extends Api
             (string) $entry
         );
 
-        Cache::put('logged', $hours + Cache::get('logged'));
+        Cache::put('time:remaining', $hours + Cache::get('time:remaining'));
     }
 
     /**
