@@ -4,6 +4,10 @@ This is a small library to make everything a tad bit easier at work.
 
 The company I work at heavily depends on Basecamp in logging our work hours. So I came up with a small cli script to just use the git commits to log the hours.
 
+## Dependencies
+- `sleepwatcher`
+- `php >= 5.5`
+
 ## Installation
 
 You can install the scripts with composer
@@ -69,13 +73,26 @@ To initialize your project, you just need to run `work init`. From there, it'll 
 
 ## Commands
 
-| Command          | Description                                          |
-|------------------|------------------------------------------------------|
-| `init`           | Initialize the current directory as a work project.  |
-| `scrum`          | Start a SCRUM session and log to basecamp.           |
-| `time:log`       | Log a time entry to basecamp.                        |
-| `time:remaining` | Fetch the remaining hours to render from basecamp.   |
+| Command          | Description                                            |
+|------------------|--------------------------------------------------------|
+| `init`           | Initialize the current directory as a work project.    |
+| `scrum`          | Start a SCRUM session and log to basecamp.             |
+| `time:log`       | Log a time entry to basecamp.                          |
+| `time:remaining` | Fetch the remaining hours to render from basecamp.     |
+| `time:in`        | Sends a message to the skype channel that you're in.   |
+| `time:out`       | Say your goodbyes!                                     |
+
+## Notes
+
+**Fetch the current SSID**
+
+```
+/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I | awk '/ SSID/ {print substr($0, index($0, $2))}'
+```
+
 
 ## Todo
-- [ ] Add caching to avoid repeated requests to basecamp.
+- [x] Add caching to avoid repeated requests to basecamp.
 - [ ] Add an offline handler to send the basecamp log once an internet connection is detected.
+
+

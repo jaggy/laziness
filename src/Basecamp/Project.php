@@ -2,6 +2,8 @@
 
 namespace Work\Basecamp;
 
+use Work\Cache\Cache;
+
 class Project extends Api
 {
     /**
@@ -11,7 +13,11 @@ class Project extends Api
      */
     public function remainingHours()
     {
-        return TimeEntry::RENDERABLE_HOURS - $this->entries()->pluck('hours')->sum();
+        if (! $logged = Cache::get('time:remaining')) {
+            Cache::put('time:remaining', $logged = $this->entries()->pluck('hours')->sum());
+        }
+
+        return TimeEntry::RENDERABLE_HOURS - $logged;
     }
 
     /**
@@ -23,15 +29,23 @@ class Project extends Api
     {
         $me = (new Person)->me();
 
+        if ($entries = Cache::get('entries')) {
+            return $entries;
+        }
+
         $entries = $this->objectify(
             $this->request('GET', "/projects/{$this->id}/time_entries.xml")['time-entry'],
             TimeEntry::class
         );
 
-        return $entries
+        $entries = $entries
             ->where('person_id', $me->id)
             ->where('date', $today = date('Y-m-d'))
             ->values();
+
+        Cache::put('entries', $entries);
+
+        return $entries;
     }
 
     /**
@@ -57,6 +71,8 @@ class Project extends Api
             "/projects/{$this->id}/time_entries.xml",
             (string) $entry
         );
+
+        Cache::put('time:remaining', $hours + Cache::get('time:remaining'));
     }
 
     /**
@@ -66,8 +82,16 @@ class Project extends Api
      */
     public function all()
     {
-        return $this->objectify(
+        if ($projects = Cache::get('projects')) {
+            return $projects;
+        }
+
+        $projects = $this->objectify(
             $this->request('GET', '/projects.xml')['project']
         );
+
+        Cache::put('projects', $projects);
+
+        return $projects;
     }
 }

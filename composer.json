@@ -7,13 +7,16 @@
             "email": "i.am@jag.gy"
         }
     ],
+    "license": "MIT",
+    "type": "script",
     "require": {
         "vlucas/phpdotenv": "^2.3",
         "symfony/console": "^3.1",
         "guzzlehttp/guzzle": "^6.2",
         "illuminate/support": "^5.2",
         "thirteen/fetchable": "^1.0",
-        "illuminate/filesystem": "^5.2"
+        "illuminate/filesystem": "^5.2",
+        "illuminate/cache": "^5.2"
     },
     "autoload": {
         "psr-4": {
