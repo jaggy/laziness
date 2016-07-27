@@ -24,8 +24,6 @@ if ((new Filesystem)->exists('.work')) {
     (new Dotenv(getcwd(), '.work'))->load();
 }
 
-$filestore = new FileStore(new Filesystem, Cache::LOCATION);
+$filestore = new FileStore(new Filesystem, getenv('CACHE'));
 Cache::setCacheRepository(new IlluminateCache($filestore));
-
-
 

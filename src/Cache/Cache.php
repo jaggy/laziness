@@ -6,8 +6,6 @@ use Illuminate\Cache\Repository as IlluminateCache;
 
 class Cache
 {
-    const LOCATION = '/tmp/work';
-
     /**
      * Illuminate cache repository handler.
      *
