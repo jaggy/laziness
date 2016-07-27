@@ -6,7 +6,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Work\Exceptions\Tantrum;
 use Work\Messaging\Skype;
+use Work\Network\Network;
 
 class TimeInCommand extends Command
 {
@@ -19,6 +21,10 @@ class TimeInCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $greeting = $this->generateGreeting();
+
+        if (! $this->inTheOffice()) {
+            $this->throwTantrum();
+        }
 
         (new Skype)->send($greeting);
     }
@@ -37,5 +43,25 @@ class TimeInCommand extends Command
         }
 
         return array_random(['gpm', "Afternoon!", 'Good afternoon.', 'Afternoon~', 'Good afternoon. :D']);
+    }
+
+    /**
+     * Check where you're working. You better not work on office projects outside!
+     *
+     * @return bool
+     */
+    private function inTheOffice()
+    {
+        return getenv('OFFICE_WIFI') == Network::ssid();
+    }
+
+    /**
+     * Throw a tantrum.
+     *
+     * @return void
+     */
+    public function throwTantrum()
+    {
+        throw Tantrum::overtime();
     }
 }

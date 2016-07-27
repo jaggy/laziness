@@ -4,12 +4,11 @@
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>networkchange</string>
-    <key>LowPriorityIO</key>
-    <true/>
+    <string>jaggy.work.log</string>
     <key>ProgramArguments</key>
     <array>
-      <string>work time:in</string>
+        <string>work time:in</string>
+        <!-- <string>touch ~/test.php</string> -->
     </array>
     <key>WatchPaths</key>
     <array>

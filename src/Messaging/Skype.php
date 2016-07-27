@@ -2,8 +2,6 @@
 
 namespace Work\Messaging;
 
-use Work\Network\Network;
-
 class Skype
 {
     /**
