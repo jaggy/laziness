@@ -6,25 +6,22 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Work\Exceptions\Tantrum;
 use Work\Messaging\Skype;
 use Work\Network\Network;
 use Work\Cache\Cache;
 
-class TimeInCommand extends Command
+class TimeOutCommand extends Command
 {
     protected function configure()
     {
-        $this->setName('time:in')
-             ->setDescription('Make the office feel your presence. 〜(￣▽￣〜)   (〜￣▽￣)〜');
+        $this->setName('time:out')
+             ->setDescription('Goodbye~');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $greeting = $this->generateGreeting();
-
         if ($this->hasLogged()) {
-            $output->writeln("<info>Sir! You have already timed in today, sir! (￣^￣)ゞ</info>");
+            $output->writeln("<info>You're already out! (￣﹃￣)</info>");
             exit;
         }
 
@@ -32,9 +29,10 @@ class TimeInCommand extends Command
             $this->throwTantrum();
         }
 
-        (new Skype)->send($greeting);
+        $output->writeln("<info>Peace out! (╯°□°）╯︵ ┻━┻</info>");
+        (new Skype)->send('out');
 
-        $this->cacheTimeIn();
+        $this->cacheTimeOut();
     }
 
     /**
@@ -44,33 +42,17 @@ class TimeInCommand extends Command
      */
     private function hasLogged()
     {
-        return Cache::has("time:in");
+        return Cache::has('time:out');
     }
 
     /**
-     * Cache the greeting log for today.
+     * Cache the farewell log for today.
      *
      * @return void
      */
-    private function cacheTimeIn()
+    private function cacheTimeOut()
     {
-        Cache::put("time:in", true);
-    }
-
-    /**
-     * Generate the greeting for everyone!
-     *
-     * @return string
-     */
-    private function generateGreeting()
-    {
-        $currentHour = (int) date('H');
-
-        if ($currentHour < 12) {
-            return array_random(['gam', "Mornin'", 'Good morning', 'Morning. :)', 'Morning! :D']);
-        }
-
-        return array_random(['gpm', "Afternoon!", 'Good afternoon.', 'Afternoon~', 'Good afternoon. :D']);
+        Cache::put('time:out', true);
     }
 
     /**
