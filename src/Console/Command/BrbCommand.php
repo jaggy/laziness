@@ -23,10 +23,19 @@ class BrbCommand extends Command
             throw Tantrum::overtime();
         }
 
+        $start = new DateTime;
+
         $output->writeln("<comment>Break time!</comment>");
         (new Skype)->send('brb');
 
         $this->prompt($input, $output, "Press enter when you're back! ");
         (new Skype)->send('back!');
+
+        $end = new DateTime;
+
+
+        $minutes = $session->format('%i');
+
+        $output->writeln("You took a break for {$minutes} minutes");
     }
 }
