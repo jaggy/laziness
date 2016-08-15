@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Work\Exceptions\Tantrum;
 use Work\Messaging\Skype;
+use DateTime;
 
 class BrbCommand extends Command
 {
@@ -34,7 +35,7 @@ class BrbCommand extends Command
         $end = new DateTime;
 
 
-        $minutes = $session->format('%i');
+        $minutes = $end->diff($start)->format('%i');
 
         $output->writeln("You took a break for {$minutes} minutes");
     }
